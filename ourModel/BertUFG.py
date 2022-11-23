@@ -254,8 +254,9 @@ r = len(DFilters)
 
 model = Net(nhid, nb_class, r, Lev, nb_node,m,shrinkage=None,
                     threshold=1e-3, dropout_prob=args.dropout).to(device)
-if th.cuda.device_count() > 1:
-    model = nn.DataParallel(model)
+
+# if th.cuda.device_count() > 1:
+model = nn.DataParallel(model)
 model = model.module
 
 input_ids, attention_mask = encode_input(text, model.tokenizer)
