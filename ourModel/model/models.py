@@ -163,7 +163,7 @@ class Net(nn.Module):
         self.classifier = th.nn.Linear(self.feat_dim, num_classes)
         # self.GConv1 = UFGConv(self.feat_dim, num_classes, r, Lev, num_nodes, shrinkage=shrinkage, threshold=threshold)
         self.GConv1 = UFGConv(self.feat_dim, nhid, r, Lev, num_nodes, shrinkage=shrinkage, threshold=threshold)
-        # self.GConv2 = UFGConv(nhid, num_classes, r, Lev, num_nodes, shrinkage=shrinkage, threshold=threshold)
+        self.GConv2 = UFGConv(nhid, num_classes, r, Lev, num_nodes, shrinkage=shrinkage, threshold=threshold)
         self.drop1 = nn.Dropout(dropout_prob)
 
 
@@ -183,7 +183,7 @@ class Net(nn.Module):
         x = F.relu(self.GConv1(g.ndata['cls_feats'], d_list))
         # x = F.relu(self.GConv1(g.ndata['cls_feats'], d_list))[idx]
         x = self.drop1(x)
-        x = self.GConv1(x, d_list)[idx]
+        x = self.GConv2(x, d_list)[idx]
         UFG_pred = th.nn.Softmax(dim=1)(x)
         pred = (UFG_pred+1e-10) * self.m + cls_pred * (1 - self.m)
         pred = th.log(pred)
